@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special:Page Builder - MediaScript</title>
+    <meta name="description" content="A comprehensive guide to using MediaScript for building static websites.">
+    <link rel="stylesheet" href="styles/builder-styles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Special:Page Builder</h1>
+    </header>
+    <main>
+        <!-- Upload HTML Section -->
+        <section id="upload-section">
+            <h2>Upload HTML</h2>
+            <input type="file" id="upload-html" accept=".html">
+            <button id="load-variables">Load Variables</button>
+        </section>
+
+           <!-- Metadata Fields -->
+           <section id="metadata">
+            <h2>Metadata</h2>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title">
+        
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+        
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url">
+        
+            <label for="preview-image">Preview Image URL:</label>
+            <div class="preview-image-container">
+                <input type="text" id="preview-image" name="preview-image" placeholder="Enter image URL">
+            </div>
+        
+            <label for="publish-date">Publish Date:</label>
+            <input type="date" id="publish-date" name="publish-date">
+        </section>
+
+        <!-- Structural and Navigation Fields -->
+        <section id="structure-section">
+            <h2>Structural and Navigation Fields</h2>
+            <label for="navigation-menu">Navigation Menu:</label>
+            <select id="navigation-menu" name="navigation-menu">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label for="breadcrumbs">Breadcrumbs:</label>
+            <input type="text" id="breadcrumbs" name="breadcrumbs" placeholder="Breadcrumbs (e.g., Home > Guides > Introduction)">
+        </section>
+
+
+   <!-- Content Fields -->
+   <section id="content-section">
+    <h2>Content Fields</h2>
+    <label for="main-content">Main Content (Markup):</label>
+    <textarea id="main-content" name="main-content" class="large-textarea" placeholder="Write your content in markup format..."></textarea>
+    
+
+    <label for="sidebar-content">Sidebar Content:</label>
+    <textarea id="sidebar-content" name="sidebar-content" placeholder="Sidebar content..."></textarea>
+</section>
+
+
+        <!-- Buttons -->
+        <div id="buttons-section">
+            <button id="generate-code">Generate Code</button>
+        </div>
+        
+
+        <!-- Generated Code Display -->
+        <section id="generated-code-section" style="display:none;">
+            <h2>Generated HTML Code</h2>
+            <textarea id="generated-code" class="large-textarea" readonly></textarea>
+            <button id="preview-button">Preview</button>
+            <button id="download-html">Download HTML</button>
+        </section>
+
+        <!-- Preview Display -->
+        <section id="preview-section" style="display:none;">
+            <h2>Preview</h2>
+            <iframe id="preview-frame" src="" style="width:100%; height:400px; border:none;"></iframe>
+        </section>
+    </main>
+
+    <script src="scripts/builder-scripts.js"></script> <!-- Link to external JavaScript file -->
+
+</body>
+</html>

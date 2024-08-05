@@ -1,0 +1,131 @@
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+header, footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    color: #2c3e50;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="date"], input[type="file"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+/* General styling for textareas */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Specific styling for the large content textarea */
+.large-textarea {
+    height: 300px; /* Adjust the height as needed */
+    resize: vertical; /* Allow vertical resizing if needed */
+}
+
+button {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Upload Section Styles */
+#upload-section {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px dashed #7f8c8d;
+    text-align: center;
+}
+
+#upload-html {
+    margin-top: 10px;
+}
+
+#load-variables {
+    background-color: #e67e22;
+    margin-top: 10px;
+}
+
+#load-variables:hover {
+    background-color: #d35400;
+}
+
+/* Buttons Section Styles */
+#buttons-section {
+    text-align: right;
+}
+
+#generate-code {
+    background-color: #27ae60;
+}
+
+#generate-code:hover {
+    background-color: #2ecc71;
+}
+
+/* Footer Styles */
+footer p {
+    margin: 0;
+    font-size: 0.9em;
+}

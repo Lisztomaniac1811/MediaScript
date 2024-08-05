@@ -258,7 +258,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = parseInfoboxEpisode(markup);
 
-        // markup = parseInfoboxCharacter(markup);
+        markup = parseInfoboxCharacter(markup);
+
+        markup = parseReferences(markup);
+
+        markup = parseNotes(markup);
+
+        markup = parseContent(markup);
 
         // Convert * Bullet Point to <ul><li>Bullet Point</li></ul>
         // markup = markup.replace(/^\*\s(.+)/gm, '<ul><li>$1</li></ul>'); 

@@ -2,7 +2,9 @@ function parseInfoboxEpisode(text, variableName, variableValue) {
     // Regular expression to match all occurrences of the infobox and its contents
     const infoboxPattern = /\{\{Infobox Episode\s+([\s\S]*?)\}\}/g;
     const keyValuePattern = /\|([^=\|\r\n]+)\s*=\s*([^\|\r\n]*)/g;
-    let resultHTML = '';
+
+    // This will hold the updated text with infoboxes replaced by HTML
+    let resultHTML = text;
 
     let infoboxMatch;
     while ((infoboxMatch = infoboxPattern.exec(text)) !== null) {
@@ -86,11 +88,14 @@ function parseInfoboxEpisode(text, variableName, variableValue) {
         }
 
         infoboxHTML += `</aside>`;
-        resultHTML += infoboxHTML;
+
+        // Replace the infobox in the original text with the generated HTML
+        resultHTML = resultHTML.replace(infoboxMatch[0], infoboxHTML);
     }
 
     return resultHTML;
 }
+
 
 
 // Infobox Character
@@ -100,6 +105,7 @@ function parseInfoboxCharacter(text, variableName, variableValue) {
     const infoboxPattern = /\{\{Infobox Character\s+([\s\S]*?)\}\}/g;
     const keyValuePattern = /\|([^=\|\r\n]+)\s*=\s*([^\|\r\n]*)/g;
     let resultHTML = '';
+    let lastIndex = 0; // To keep track of the position of the last matched infobox
 
     let infoboxMatch;
     while ((infoboxMatch = infoboxPattern.exec(text)) !== null) {
@@ -126,6 +132,7 @@ function parseInfoboxCharacter(text, variableName, variableValue) {
             aliases = '',
             significant = '',
             family = '',
+            others = '',
             profession = '',
             allies = '',
             marital = '',
@@ -148,59 +155,59 @@ function parseInfoboxCharacter(text, variableName, variableValue) {
             last = ''
         } = values;
 
-        // Build HTML
+        // Check if there are any values for various sections
+        const hasBiographicalInfo = aliases || marital || born || birthPlace || home || age;
+        const hasFate = status || died || deathPlace || CauseofDeath;
+        const hasRelationships = family || significant || allies;
+        const hasPhysicalDescription = species || gender || height || weight || eyes;
+        const hasAppearances = actor || onlyappearance || first || last;
+
+        // Build HTML for the infobox
         let infoboxHTML = `
             <aside class="infobox-character">
                 <h2 class="infobox-title">${name}</h2>
                 ${image ? `<img src="images/resized/800px/${image}" alt="${imagecaption}">` : ''}
         `;
 
-        // Biographical Information Section
-        let hasBiographicalInfo = aliases || significant || family || profession || home || age;
+        // Append sections if they have content
         if (hasBiographicalInfo) {
             infoboxHTML += `
                 <h2 class="infobox-subtitle">Biographical Information</h2>
                 <section>
                     ${aliases ? `<div class="infobox-item"><h3>Aliases:</h3><div class="infobox-value">${aliases}</div></div>` : ''}
-                    ${marital ? `<div class="infobox-item"><h3>Marital Status:</h3><div class="infobox-value">${marital}</div></div>` : ''}
-                    ${born ? `<div class="infobox-item"><h3>Date of Birth:</h3><div class="infobox-value">${born}</div></div>` : ''}
-                    ${birthPlace ? `<div class="infobox-item"><h3>Place of Birth:</h3><div class="infobox-value">${birthPlace}</div></div>` : ''}
+                    ${marital ? `<div class="infobox-item"><h3>Marital status:</h3><div class="infobox-value">${marital}</div></div>` : ''}
+                    ${born ? `<div class="infobox-item"><h3>Date of birth:</h3><div class="infobox-value">${born}</div></div>` : ''}
+                    ${birthPlace ? `<div class="infobox-item"><h3>Place of birth:</h3><div class="infobox-value">${birthPlace}</div></div>` : ''}
                     ${home ? `<div class="infobox-item"><h3>Home:</h3><div class="infobox-value">${home}</div></div>` : ''}
                     ${age ? `<div class="infobox-item"><h3>Age:</h3><div class="infobox-value">${age}</div></div>` : ''}
                 </section>
             `;
         }
 
-        // Fate Section
-        let hasFateInfo = status || died || deathPlace || CauseofDeath;
-        if (hasFateInfo) {
+        if (hasFate) {
             infoboxHTML += `
                 <h2 class="infobox-subtitle">Fate</h2>
                 <section>
                     ${status ? `<div class="infobox-item"><h3>Status:</h3><div class="infobox-value">${status}</div></div>` : ''}
-                    ${died ? `<div class="infobox-item"><h3>Date of Death:</h3><div class="infobox-value">${died}</div></div>` : ''}
-                    ${deathPlace ? `<div class="infobox-item"><h3>Place of Death:</h3><div class="infobox-value">${deathPlace}</div></div>` : ''}
-                    ${CauseofDeath ? `<div class="infobox-item"><h3>Cause of Death:</h3><div class="infobox-value">${CauseofDeath}</div></div>` : ''}
+                    ${died ? `<div class="infobox-item"><h3>Date of death:</h3><div class="infobox-value">${died}</div></div>` : ''}
+                    ${deathPlace ? `<div class="infobox-item"><h3>Place of death:</h3><div class="infobox-value">${deathPlace}</div></div>` : ''}
+                    ${CauseofDeath ? `<div class="infobox-item"><h3>Cause of death:</h3><div class="infobox-value">${CauseofDeath}</div></div>` : ''}
                 </section>
             `;
         }
 
-        // Relationships Section
-        let hasRelationshipsInfo = family || significant || allies;
-        if (hasRelationshipsInfo) {
+        if (hasRelationships) {
             infoboxHTML += `
                 <h2 class="infobox-subtitle">Relationships</h2>
                 <section>
                     ${family ? `<div class="infobox-item"><h3>Relatives:</h3><div class="infobox-value">${family}</div></div>` : ''}
                     ${significant ? `<div class="infobox-item"><h3>Significant Other(s):</h3><div class="infobox-value">${significant}</div></div>` : ''}
-                    ${allies ? `<div class="infobox-item"><h3>Allies:</h3><div class="infobox-value">${allies}</div></div>` : ''}
+                    ${allies ? `<div class="infobox-item"><h3>Affiliation:</h3><div class="infobox-value">${allies}</div></div>` : ''}
                 </section>
             `;
         }
 
-        // Physical Description Section
-        let hasPhysicalDescriptionInfo = species || gender || height || weight || eyes;
-        if (hasPhysicalDescriptionInfo) {
+        if (hasPhysicalDescription) {
             infoboxHTML += `
                 <h2 class="infobox-subtitle">Physical Description</h2>
                 <section>
@@ -208,37 +215,115 @@ function parseInfoboxCharacter(text, variableName, variableValue) {
                     ${gender ? `<div class="infobox-item"><h3>Gender:</h3><div class="infobox-value">${gender}</div></div>` : ''}
                     ${height ? `<div class="infobox-item"><h3>Height:</h3><div class="infobox-value">${height}</div></div>` : ''}
                     ${weight ? `<div class="infobox-item"><h3>Weight:</h3><div class="infobox-value">${weight}</div></div>` : ''}
-                    ${eyes ? `<div class="infobox-item"><h3>Eye Color:</h3><div class="infobox-value">${eyes}</div></div>` : ''}
+                    ${eyes ? `<div class="infobox-item"><h3>Eye color:</h3><div class="infobox-value">${eyes}</div></div>` : ''}
                 </section>
             `;
         }
 
-        // Appearances Section
-        let hasAppearancesInfo = actor || onlyappearance || first || last;
-        if (hasAppearancesInfo) {
+        if (hasAppearances) {
             infoboxHTML += `
                 <h2 class="infobox-subtitle">Appearances</h2>
                 <section>
                     ${actor ? `<div class="infobox-item"><h3>Portrayed by:</h3><div class="infobox-value">${actor}</div></div>` : ''}
                     ${onlyappearance ? `<div class="infobox-item"><h3>Appears in:</h3><div class="infobox-value">${onlyappearance}</div></div>` : ''}
-                    <h3>Appearances:</h3>
-                    <table>
-                        <thead><tr>
-                            ${first ? `<th>First Appearance</th>` : ''}
-                            ${last ? `<th>Last Appearance</th>` : ''}
-                        </tr></thead>
-                        <tbody><tr>
-                            ${first ? `<td>${first}</td>` : `<td colspan="2">${last}</td>`}
-                            ${last ? `<td>${last}</td>` : ''}
-                        </tr></tbody>
-                    </table>
+                    ${first ? `<div class="infobox-item"><h3>First appearance:</h3><div class="infobox-value">${first}</div></div>` : ''}
+                    ${last ? `<div class="infobox-item"><h3>Last appearance:</h3><div class="infobox-value">${last}</div></div>` : ''}
                 </section>
             `;
         }
 
         infoboxHTML += `</aside>`;
         resultHTML += infoboxHTML;
+        
+        // Track the end of the current infobox match
+        lastIndex = infoboxPattern.lastIndex;
+    }
+
+    // Append any remaining text after the last infobox
+    if (lastIndex < text.length) {
+        resultHTML += text.slice(lastIndex);
     }
 
     return resultHTML;
+}
+
+// Function to parse references
+function parseReferences(text) {
+    // Regular expression to match the reference format {{ref|url|title|display}}
+    const refPattern = /\{\{ref\|([^\|\}]+)\|([^\|\}]+)\|([^\}\}]+)\}\}/g;
+    const refList = [];
+    let resultText = '';
+    let lastIndex = 0; // To keep track of the position of the last matched reference
+
+    let match;
+    let refCounter = 1; // Counter for generating reference numbers
+
+    // Find all references and replace them with superscript numbers
+    while ((match = refPattern.exec(text)) !== null) {
+        const [fullMatch, url, title, display] = match;
+        // Add reference to the list
+        refList.push(`<li id="ref-${refCounter}"><a href="${url}" title="${title}">${display}</a> ${title ? `<i>${title}</i>` : ''} <a href="#ref-link-${refCounter}" class="back-to-text">↑</a></li>`);
+        // Replace reference with square bracketed number
+        resultText += text.slice(lastIndex, match.index) + `<sup><a id="ref-link-${refCounter}" href="#ref-${refCounter}">[${refCounter}]</a></sup>`;
+        lastIndex = refPattern.lastIndex;
+        refCounter++;
+    }
+
+    // Append any remaining text after the last reference
+    resultText += text.slice(lastIndex);
+
+    // Create the references section if {{references}} is found
+    resultText = resultText.replace(/\{\{references\}\}/g, '<div id="references"><ol>' + refList.join('\n') + '</ol></div>');
+
+    return resultText;
+}
+
+// Function to parse notes
+function parseNotes(text) {
+    // Regular expression to match the notes format {{notes|text}}
+    const notesPattern = /\{\{notes\|([^\}\}]+)\}\}/g;
+    const notesList = [];
+    let resultText = '';
+    let lastIndex = 0; // To keep track of the position of the last matched note
+
+    let match;
+    let noteCounter = 0; // Counter for generating alphabetic note labels
+
+    // Function to generate alphabetic labels like a, b, c, ..., z, aa, ab, ...
+    function getAlphabeticLabel(index) {
+        let label = '';
+        index++;
+        while (index > 0) {
+            label = String.fromCharCode((index - 1) % 26 + 'a'.charCodeAt(0)) + label;
+            index = Math.floor((index - 1) / 26);
+        }
+        return label;
+    }
+
+    // Find all notes and replace them with alphabetic labels
+    while ((match = notesPattern.exec(text)) !== null) {
+        const [fullMatch, textContent] = match;
+        // Add note to the list with <li> tags
+        const label = getAlphabeticLabel(noteCounter);
+        notesList.push(`<li id="note-${label}">${textContent} <a href="#note-link-${label}" class="back-to-text">↑</a></li>`);
+        // Replace note with alphabetic label
+        resultText += text.slice(lastIndex, match.index) + `<sup><a id="note-link-${label}" href="#note-${label}">[${label}]</a></sup>`;
+        lastIndex = notesPattern.lastIndex;
+        noteCounter++;
+    }
+
+    // Append any remaining text after the last note
+    resultText += text.slice(lastIndex);
+
+    // Create the notes section if {{notes}} is found
+    resultText = resultText.replace(/\{\{notes\}\}/g, '<div id="notes"><ol type="a">' + notesList.join('\n') + '</ol></div>');
+
+    return resultText;
+}
+
+// Function to combine references and notes into their respective sections
+function parseContent(text) {
+    let parsedText = parseReferences(text);
+    parsedText = parseNotes(parsedText);
+    return parsedText;
 }

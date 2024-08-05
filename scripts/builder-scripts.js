@@ -57,6 +57,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 'breadcrumbs':
                     document.getElementById('breadcrumbs').value = variableValue;
                     break;
+                case 'website-title':
+                    document.getElementById('website-title').value = variableValue;
+                    break;
+                    case 'navigationMenu':
+                    document.getElementById('navigation-menu').value = variableValue;
+                    break;
+                    case 'footerContent':
+                    document.getElementById('footer-content').value = variableValue;
+                    break;
+                    case 'language':
+                    document.getElementById('language').value = variableValue;
+                    break;
                 default:
                     console.warn(`Unrecognized variable: ${variableName}`);
             }
@@ -244,6 +256,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = convertExternalLinks(markup);
 
+        markup = parseInfoboxEpisode(markup);
+
+        // markup = parseInfoboxCharacter(markup);
+
         // Convert * Bullet Point to <ul><li>Bullet Point</li></ul>
         // markup = markup.replace(/^\*\s(.+)/gm, '<ul><li>$1</li></ul>'); 
 
@@ -262,45 +278,113 @@ document.addEventListener('DOMContentLoaded', function () {
         const url = document.getElementById('url').value;
         const previewImage = document.getElementById('preview-image').value;
         const publishDate = document.getElementById('publish-date').value;
+        const mainContentraw = document.getElementById('main-content').value;
         let mainContent = document.getElementById('main-content').value;
         const sidebarContent = document.getElementById('sidebar-content').value;
         const navigationMenu = document.getElementById('navigation-menu').value;
+        const footerContent = document.getElementById('footer-content').value;
         const breadcrumbs = document.getElementById('breadcrumbs').value;
+        const websiteTitle = document.getElementById('website-title').value;
+        const language = document.getElementById('language').value;        
+
+
+
+          // Determine the <title> content based on the presence of websiteTitle
+         const fullTitle = websiteTitle ? `${title} | ${websiteTitle}` : title;
+
 
         // Convert mainContent from markup to HTML
         mainContent = convertMarkupToHTML(mainContent);
 
         // HTML structure template
-        const htmlTemplate = `
+//         const htmlTemplate = `
+// <!DOCTYPE html>
+// <html lang="en">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>${title}</title>
+//     <meta name="description" content="${description}">
+//     <meta property="og:title" content="${title}">
+//     <meta property="og:description" content="${description}">
+//     <meta property="og:image" content="${previewImage}">
+//     <meta property="og:url" content="${url}">
+//     <meta name="publish-date" content="${publishDate}">
+//     <link rel="stylesheet" href="styles/main.css"> <!-- Link to external CSS file -->
+// </head>
+// <body>
+//     <header>
+//         <h1>${title}</h1>
+//         ${navigationMenu === 'yes' ? '<nav><p>Navigation content example.</p></nav>' : ''}
+//     </header>
+//     <main>
+//         ${breadcrumbs ? `<nav class="breadcrumbs">${breadcrumbs}</nav>` : ''}
+//         <section id="main-content">
+//             ${mainContent}
+//         </section>
+//         ${sidebarContent ? `<aside id="sidebar">${sidebarContent}</aside>` : ''}
+//     </main>
+//      ${FooterContent === 'yes' ? '<footer><p>Footer content example.</p></footer>' : ''}
+// </body>
+// </html>
+// `;
+
+let htmlTemplate = `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${language}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
+    <script>
+        var language = "${language}";
+        var title = "${title}";
+        var description = "${description}";
+        var url = "${url}";
+        var previewImage = "${previewImage}";
+        var publishDate = "${publishDate}";
+        var navigationMenu = "${navigationMenu}";
+        var breadcrumbs = "${breadcrumbs}";
+        var footerContent = "${footerContent}";
+        var mainContent = \`${mainContentraw}\`;
+    </script>
+    <script src="script-pack.js"></script>
+    <script src="variables.js"></script>
+    <!--Meta tags start here-->
+    <!--General-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="title" content="${title}">
     <meta name="description" content="${description}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${fullTitle}</title>
+    <!--Facebook-->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${url}">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:image" content="${previewImage}">
-    <meta property="og:url" content="${url}">
-    <meta name="publish-date" content="${publishDate}">
-    <link rel="stylesheet" href="styles/main.css"> <!-- Link to external CSS file -->
+    <!--Twitter-->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="${url}">
+    <meta property="twitter:title" content="${title}">
+    <meta property="twitter:description" content="${description}">
+    <meta property="twitter:image" content="${previewImage}">
+    <!--Meta tags end here-->
+    <!--Link tags start here-->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/css.css">
+    <!--Link tags end here-->
 </head>
-<body>
-    <header>
-        <h1>${title}</h1>
-        ${navigationMenu === 'yes' ? '<nav><!-- Navigation menu goes here --></nav>' : ''}
-    </header>
+<body
+ ${navigationMenu === 'yes' ? '<nav id="dropdown-navigation" style="top: -64px;"></nav><nav id="mobile-banner"></nav>' : ''}
     <main>
-        ${breadcrumbs ? `<nav class="breadcrumbs">${breadcrumbs}</nav>` : ''}
-        <section id="main-content">
-            ${mainContent}
-        </section>
-        ${sidebarContent ? `<aside id="sidebar">${sidebarContent}</aside>` : ''}
+     ${navigationMenu === 'yes' ? '<nav id="wiki-header-nav"></nav>' : ''}
+      ${breadcrumbs ? `<nav class="breadcrumbs">${breadcrumbs}</nav>` : ''}
+     <div class="wiki-page-title-header">
+            <h1>${title}</h1>
+            <hr class="page-separator">
+        </div>
+        <div class="content">${mainContent}</div>
     </main>
-    <footer>
-        <p>Footer content example.</p>
-    </footer>
+     ${sidebarContent ? `<div id="sidebar">${sidebarContent}</div>` : ''}
+     ${footerContent === 'yes' ? '<footer><p>Footer content example.</p></footer>' : ''}
 </body>
 </html>
 `;

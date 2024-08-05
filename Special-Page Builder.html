@@ -6,6 +6,7 @@
     <title>Special:Page Builder - MediaScript</title>
     <meta name="description" content="A comprehensive guide to using MediaScript for building static websites.">
     <link rel="stylesheet" href="styles/builder-styles.css"> <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="file:///D:/Coding/GeoWiki/styles/infobox-desktop.css">
 </head>
 <body>
     <header>
@@ -22,6 +23,19 @@
            <!-- Metadata Fields -->
            <section id="metadata">
             <h2>Metadata</h2>
+
+            <label for="language">Select Language: </label>
+        <select id="language">
+            <option value="en">English</option>
+            <option value="ka">Georgian</option>
+            <option value="eo">Esperanto</option>
+            <option value="de">German</option>
+            <!-- Add more languages here -->
+        </select>
+
+        <label for="website-title">Website Title:</label>
+        <input type="text" id="website-title" name="website-title" value="MyWiki">        
+        
             <label for="title">Title:</label>
             <input type="text" id="title" name="title">
         
@@ -44,13 +58,19 @@
         <section id="structure-section">
             <h2>Structural and Navigation Fields</h2>
             <label for="navigation-menu">Navigation Menu:</label>
-            <select id="navigation-menu" name="navigation-menu">
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-            </select>
+<select id="navigation-menu" name="navigation-menu">
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+</select>
 
             <label for="breadcrumbs">Breadcrumbs:</label>
             <input type="text" id="breadcrumbs" name="breadcrumbs" placeholder="Breadcrumbs (e.g., Home > Guides > Introduction)">
+
+            <label for="footer-content">Footer:</label>
+            <select id="footer-content" name="footer-content">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
         </section>
 
 
@@ -86,8 +106,54 @@
             <iframe id="preview-frame" src="" style="width:100%; height:400px; border:none;"></iframe>
         </section>
     </main>
-
+    <script src="scripts/templates.js"></script>
     <script src="scripts/builder-scripts.js"></script> <!-- Link to external JavaScript file -->
+    <footer>
+        <div class="footer-content">
+            <!-- About Section -->
+            <section class="footer-about">
+                <h3>About MediaScriptWiki</h3>
+                <p>MediaScriptWiki is your go-to resource for media scripting and wiki management. Explore our comprehensive guides and tools.</p>
+                <a href="Special_About.html" class="footer-link">Learn More</a>
+            </section>
+    
+            <!-- Contact Section -->
+            <section class="footer-contact">
+                <h3>Contact Us</h3>
+                <p>If you have any questions or need support, feel free to reach out:</p>
+                <p>Email: <a href="mailto:support@mediascriptwiki.com">support@mediascriptwiki.com</a></p>
+                <p>Phone: +123-456-7890</p>
+            </section>
+    
+            <!-- Help Section -->
+            <section class="footer-help">
+                <h3>Help & Support</h3>
+                <p>Need assistance? Visit our <a href="Special_Help.html" class="footer-link">Help Page</a> for FAQs and support resources.</p>
+            </section>
+    
+            <!-- GitHub Repository Section -->
+            <section class="footer-github">
+                <h3>GitHub Repository</h3>
+                <p>Check out our code and contribute on <a href="https://github.com/Lisztomaniac1811/MediaScript" target="_blank" class="footer-link">GitHub</a>.</p>
+            </section>
+    
+            <!-- All Rights Reserved Section -->
+            <section class="footer-rights">
+                <p>&copy; 2024 <span id="current-year"></span> MediaScriptWiki. All rights reserved.</p>
+            </section>
+        </div>
+    
+        <div class="footer-bottom">
+            <p><a href="Special_About.html" class="footer-link">About</a> | <a href="Special_Contact.html" class="footer-link">Contact</a> | <a href="Special_Help.html" class="footer-link">Help</a></p>
+        </div>
+    </footer>
+    
+    <script>
+        // Update year dynamically
+        const currentYear = new Date().getFullYear();
+        const startYear = 2024;
+        document.getElementById('current-year').textContent = (currentYear > startYear) ? `${startYear}-${currentYear}` : startYear;
+    </script>
 
 </body>
 </html>

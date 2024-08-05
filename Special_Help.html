@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .section pre {
+            background: #eaeaea;
+            border: 1px solid #ddd;
+        }
+        .section h3 {
+            margin-top: 0;
+        }
+        .note {
+            background: #fffbcc;
+            border-left: 4px solid #ffd700;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            margin: 5px 0;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Help Guide</h1>
+    
+    <nav>
+        <ul>
+            <li><a href="#infobox-episode">Infobox Episode</a></li>
+            <!-- Add more sections here as needed -->
+        </ul>
+    </nav>
+    
+    <div id="infobox-episode" class="section">
+        <h2>Infobox Episode</h2>
+        <p>This section provides instructions on how to use the <code>parseInfobox</code> function to create and format episode infoboxes. Below you will find the syntax to use, examples of different infoboxes, and how to implement them.</p>
+        
+        <h3>Function Overview</h3>
+        <p>The <code>parseInfobox</code> function takes text input formatted with specific syntax and converts it into HTML for displaying episode infoboxes. It also supports a dynamic title feature based on external variable values.</p>
+
+        <h3>Syntax</h3>
+        <p>To use the <code>parseInfobox</code> function, include the infobox markup in your text following the structure below:</p>
+
+        <h4>Infobox Markup Structure</h4>
+        <pre>
+<code>
+{{Infobox Episode
+| title = Example Title
+| image = example.jpg
+| caption = Example Caption
+| season = 1
+| episodeno = 1
+| airdate = January 1, 2024
+| writer = John Doe
+| director = Jane Smith
+| previous = Previous Episode Title
+| next = Next Episode Title
+}}
+</code>
+        </pre>
+
+        <h3>Examples</h3>
+        <div class="section">
+            <h4>Example 1: Complete Infobox</h4>
+            <pre>
+<code>
+{{Infobox Episode
+| title = Bates Motel
+| image = bates_motel.jpg
+| caption = Bates Motel Poster
+| season = 5
+| episodeno = 10
+| airdate = April 30, 2017
+| writer = Carlton Cuse
+| director = Kerry Ehrin
+| previous = The Body
+| next = The Goodnight
+}}
+</code>
+            </pre>
+        </div>
+
+        <div class="section">
+            <h4>Example 2: Missing Some Fields</h4>
+            <pre>
+<code>
+{{Infobox Episode
+| title = Breaking Bad
+| season = 2
+| episodeno = 8
+| airdate = August 10, 2009
+| writer = Peter Gould
+| director = Thomas Schnauz
+}}
+</code>
+            </pre>
+        </div>
+
+        <div class="section">
+            <h4>Example 3: Only Title and Image</h4>
+            <pre>
+<code>
+{{Infobox Episode
+| title = The Simpsons
+| image = simpsons.jpg
+}}
+</code>
+            </pre>
+        </div>
+
+        <div class="section">
+            <h4>Example 4: Chronology Only</h4>
+            <pre>
+<code>
+{{Infobox Episode
+| title = Stranger Things
+| previous = Chapter Three: The Monster
+| next = Chapter Five: The Flea and the Acrobat
+}}
+</code>
+            </pre>
+        </div>
+
+        <h3>Notes</h3>
+        <div class="note">
+            <h4>Default Title</h4>
+            <p>If the <code>title</code> field is not specified in the infobox, the function will use the page title defined in the external variable <code>variableName</code> and <code>variableValue</code>. Ensure that you pass these variables correctly for accurate results.</p>
+        </div>
+
+        <div class="note">
+            <h4>Dynamic Column Display</h4>
+            <p>If either the <code>previous</code> or <code>next</code> fields are missing, the infobox will only display the existing one in a single-column format.</p>
+        </div>
+
+        <h3>Implementation</h3>
+        <p>Include the <code>parseInfobox</code> function in your JavaScript code and call it with the appropriate text input and external variables. For example:</p>
+        <pre>
+<code>
+const text = `{{Infobox Episode
+| title = Example Title
+| image = example.jpg
+| season = 1
+| episodeno = 1
+| airdate = January 1, 2024
+| writer = John Doe
+| director = Jane Smith
+| previous = Previous Episode Title
+| next = Next Episode Title
+}}`;
+
+const variableName = 'title';
+const variableValue = 'Custom Title';
+
+const html = parseInfobox(text, variableName, variableValue);
+document.getElementById('infobox-container').innerHTML = html;
+</code>
+        </pre>
+
+        <h3>Conclusion</h3>
+        <p>By following this guide, you can easily format episode infoboxes for your content. Ensure your infobox syntax is correct and use the function to generate well-structured HTML output.</p>
+    </div>
+
+    <!-- Add more sections here for other functionalities or help topics -->
+
+</body>
+</html>

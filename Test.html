@@ -1,26 +1,117 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Page</title>
     <script>
-var title = "Sample Page";
-var description = "This is a sample description for testing purposes.";
-var url = "http://example.com/sample-page";
-var previewImage = "http://example.com/image.jpg";
-var publishDate = "2024-08-04";
-var mainContent = `== Welcome ==
-This is a sample page for testing purposes.
-* Bullet Point 1
-* Bullet Point 2
-== Section ==
-Some unrelated content here.`;
-var sidebarContent = "Sidebar information goes here.";
-var breadcrumbs = "Home > Sample Page";
+        var language = "en";
+        var title = "";
+        var description = "";
+        var url = "";
+        var previewImage = "";
+        var publishDate = "";
+        var navigationMenu = "yes";
+        var breadcrumbs = "";
+        var footerContent = "yes";
+        var mainContent = `==First You Dream, Then You Die==
+{{Infobox Episode
+|title = First You Dream, Then You Die
+|image = 101 Promo (35).jpg
+|caption = 
+|season = 1
+|episodeno = 1
+|airdate = March 18, 2013
+|writer = &#8226; [[Carlton Cuse]]<br>&#8226; [[Kerry Ehrin]]<br>&#8226; [[Anthony Cipriano]]
+|director = [[Tucker Gates]]
+|previous = 
+|next = [[Nice Town You Picked, Norma...]]
+}}
+
+==Nice Town You Picked, Norma...==
+{{Infobox Episode
+|title = Nice Town You Picked, Norma...
+|season = 1
+|episodeno = 2
+|image = Nice Town You Picked, Norma....jpg
+|airdate = March 25, 2013
+|writer = [[Kerry Ehrin]]
+|director = [[Tucker Gates]]
+|previous = [[First You Dream, Then You Die]]
+|next = [[What's Wrong With Norman]]
+}}`;
     </script>
+    <script src="script-pack.js"></script>
+    <script src="variables.js"></script>
+    <!--Meta tags start here-->
+    <!--General-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="title" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> | MyWiki</title>
+    <!--Facebook-->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <!--Twitter-->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="">
+    <meta property="twitter:description" content="">
+    <meta property="twitter:image" content="">
+    <!--Meta tags end here-->
+    <!--Link tags start here-->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/css.css">
+    <!--Link tags end here-->
 </head>
-<body>
-    <!-- Body content here -->
+<body
+ <nav id="dropdown-navigation" style="top: -64px;"></nav><nav id="mobile-banner"></nav>
+    <main>
+     <nav id="wiki-header-nav"></nav>
+      
+     <div class="wiki-page-title-header">
+            <h1></h1>
+            <hr class="page-separator">
+        </div>
+        <div class="content">
+        <aside class="infobox-episode">
+            <h2 class="infobox-title">First You Dream, Then You Die</h2>
+            <img src="images/resized/800px/101 Promo (35).jpg" alt="">
+            <h2 class="infobox-subtitle">Episode Information</h2>
+            <section>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><a href="Season_1.html" title="Season 1">Season 1</a></td>
+                            <td>Episode 1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="infobox-item"><h3>Airdate:</h3><div class="infobox-value">March 18, 2013</div></div>
+                <div class="infobox-item"><h3>Writer:</h3><div class="infobox-value">&#8226; <a href="Carlton_Cuse.html" title="Carlton Cuse">Carlton Cuse</a>, &#8226; <a href="Kerry_Ehrin.html" title="Kerry Ehrin">Kerry Ehrin</a>, &#8226; <a href="Anthony_Cipriano.html" title="Anthony Cipriano">Anthony Cipriano</a></div></div>
+                <div class="infobox-item"><h3>Director:</h3><div class="infobox-value"><a href="Tucker_Gates.html" title="Tucker Gates">Tucker Gates</a></div></div>
+                <h2 class="infobox-subtitle">Episode Chronology</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>← Previous</th>
+                            <th>Next →</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i>No Previous Episode</i></td>
+                            <td><a href="Nice_Town_You_Picked,_Norma....html" title="Nice Town You Picked, Norma...">Nice Town You Picked, Norma...</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </aside>
+    </div>
+    </main>
+     
+     <footer><p>Footer content example.</p></footer>
 </body>
 </html>

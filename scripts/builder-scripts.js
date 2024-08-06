@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = convertNumberedLists(markup);
 
+        markup = parseFiles(markup);
+
         markup = convertInternalLinks(markup);
 
         markup = convertExternalLinks(markup);
@@ -265,6 +267,12 @@ document.addEventListener('DOMContentLoaded', function () {
         markup = parseNotes(markup);
 
         markup = parseContent(markup);
+
+        markup = parseGallery(markup);
+
+        markup = parseYouTube(markup);
+
+
 
         // Convert * Bullet Point to <ul><li>Bullet Point</li></ul>
         // markup = markup.replace(/^\*\s(.+)/gm, '<ul><li>$1</li></ul>'); 

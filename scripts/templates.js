@@ -327,3 +327,169 @@ function parseContent(text) {
     parsedText = parseNotes(parsedText);
     return parsedText;
 }
+
+function parseGallery(text) {
+    // Regular expression to match the <gallery>...</gallery> block
+    const galleryPattern = /<gallery>([\s\S]*?)<\/gallery>/g;
+    let resultText = '';
+    let lastIndex = 0; // To keep track of the position of the last matched gallery
+
+    let match;
+    let galleryCounter = 0; // Counter to differentiate multiple galleries
+
+    // Find all <gallery>...</gallery> blocks
+    while ((match = galleryPattern.exec(text)) !== null) {
+        const [fullMatch, galleryContent] = match;
+        const galleryItems = galleryContent.trim().split('\n');
+
+        // Create gallery HTML structure
+        let galleryHTML = `<div id="GalleryRow${galleryCounter}" class="GalleryRow">\n`;
+        galleryItems.forEach(item => {
+            const [url, caption = ''] = item.split('|');
+            const imageUrl = url.trim();
+            const imageCaption = caption.trim();
+            
+            // Determine if the image is an online picture or a local file
+            const finalUrl = imageUrl.startsWith('https://') ? imageUrl : `images/resized/800px/${imageUrl}`;
+
+            galleryHTML += `
+                <div class="GalleryColumn">
+                    <img src="${finalUrl}" style="width:100%" onclick="" class="hover-shadow cursor" alt="${imageCaption}">
+                </div>\n`;
+        });
+        galleryHTML += `</div>\n`;
+
+        // Replace gallery block with generated HTML
+        resultText += text.slice(lastIndex, match.index) + galleryHTML;
+        lastIndex = galleryPattern.lastIndex;
+        galleryCounter++;
+    }
+
+    // Append any remaining text after the last gallery block
+    resultText += text.slice(lastIndex);
+
+    return resultText;
+}
+
+function parseFiles(text) {
+    // Regular expression to match the [[File:fileurl.jpg|...|]] syntax
+    const filePattern = /\[\[File:(.*?)\|(.*?)\]\]/g;
+    let resultText = '';
+    let lastIndex = 0; // To keep track of the position of the last matched file
+
+    let match;
+
+    // Find all [[File:fileurl.jpg|...|]] blocks
+    while ((match = filePattern.exec(text)) !== null) {
+        const [fullMatch, fileUrl, params] = match;
+        
+        // Split the parameters
+        const paramArray = params.split('|').map(param => param.trim());
+        const imageUrl = fileUrl.trim();
+
+        // Initialize variables
+        let imgWidth = '200px'; // Default width
+        let floatStyle = '';
+        let caption = '';
+        let finalImageUrl = '';
+
+        // Process parameters
+        paramArray.forEach(param => {
+            if (/^\d+px$/.test(param)) {
+                imgWidth = param; // Detect width
+            } else if (param === 'left' || param === 'right') {
+                floatStyle = `float:${param};`; // Detect float direction
+            } else {
+                caption = param; // Anything else is considered caption
+            }
+        });
+
+        // Process image URL
+        finalImageUrl = imageUrl.startsWith('https://') ? imageUrl : `images/resized/800px/${imageUrl}`;
+
+        // Create the HTML structure
+        let figureHTML = `<figure style="width:calc(${imgWidth} + 20px); ${floatStyle}">\n`;
+        figureHTML += `<img src="${finalImageUrl}" alt="${caption || ''}" style="width:${imgWidth};">\n`;
+        if (caption) {
+            figureHTML += `<figcaption>${caption}</figcaption>\n`;
+        }
+        figureHTML += `</figure>\n`;
+
+        // Replace file block with generated HTML
+        resultText += text.slice(lastIndex, match.index) + figureHTML;
+        lastIndex = filePattern.lastIndex;
+    }
+
+    // Append any remaining text after the last file block
+    resultText += text.slice(lastIndex);
+
+    return resultText;
+}
+
+function parseYouTube(text) {
+    // Regular expression to match the <youtube>...</youtube> block
+    const youtubePattern = /<youtube>([\s\S]*?)<\/youtube>/g;
+    let resultText = '';
+    let lastIndex = 0; // To keep track of the position of the last matched YouTube block
+
+    let match;
+
+    // Find all <youtube>...</youtube> blocks
+    while ((match = youtubePattern.exec(text)) !== null) {
+        const [fullMatch, youtubeContent] = match;
+        const videoEntries = youtubeContent.trim().split('\n');
+
+        // Create gallery HTML structure
+        let galleryHTML = `<div id="GalleryRow">\n`;
+
+        videoEntries.forEach(entry => {
+            const [url, caption = ''] = entry.split('|');
+            const trimmedUrl = url.trim();
+            const videoId = extractVideoId(trimmedUrl);
+            const videoCaption = caption ? caption.trim() : '';
+
+            // Generate thumbnail URL
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+            // Create HTML for each video
+            galleryHTML += `
+                <div class="wikia-gallery-item">
+                    <div class="thumb">
+                        <div class="gallery-image-wrapper accent" id="${videoCaption}" style="position: relative;">
+                            <a class="image lightbox video video-thumbnail xsmall" onclick="window.location.href='https://www.youtube.com/watch?v=${videoId}'" title="${videoCaption}">
+                                <span class="thumbnail-play-icon-container">
+                                    <svg class="thumbnail-play-icon">
+                                        <use xlink:href="#wds-player-icon-play"></use>
+                                    </svg>
+                                </span>
+                                <noscript>
+                                    <img style="" src="${thumbnailUrl}" title="${videoCaption}">
+                                </noscript>
+                                <img style="" src="${thumbnailUrl}" title="${videoCaption}" alt="${videoCaption}" onclick="" class="hover-shadow cursor">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="title">${videoCaption}</div>
+                </div>\n`;
+        });
+
+        galleryHTML += `</div>\n`;
+
+        // Replace YouTube block with generated HTML
+        resultText += text.slice(lastIndex, match.index) + galleryHTML;
+        lastIndex = youtubePattern.lastIndex;
+    }
+
+    // Append any remaining text after the last YouTube block
+    resultText += text.slice(lastIndex);
+
+    return resultText;
+}
+
+// Function to extract YouTube video ID from different URL formats
+function extractVideoId(url) {
+    // Match video ID from full URL, shortened URL, or standalone ID
+    const videoIdPattern = /(?:https?:\/\/(?:www\.)?youtube\.com\/watch\?v=|https?:\/\/youtu\.be\/|^)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(videoIdPattern);
+    return match ? match[1] : '';
+}

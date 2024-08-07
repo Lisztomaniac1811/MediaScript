@@ -157,3 +157,127 @@
 
 </body>
 </html>
+
+<!-- 
+<div id="GalleryModal" style="display: none;">
+    <span class="GalleryClose cursor" onclick="closeModal();pauseYouTubeVideo();" accesskey="esc">✕</span>
+    <div class="modal-content">
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">1/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="images/101 Promo (1).jpg" target="_blank">ნახვა</a> |
+                <a href="images/101 Promo (1).jpg" download="">გადმოწერა</a>
+            </div>
+            <img src="images/resized/800px/101 Promo (1).jpg">
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">2/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="images/101 Promo (2).jpg" target="_blank">ნახვა</a> |
+                <a href="images/101 Promo (2).jpg" download="">გადმოწერა</a>
+            </div>
+            <img src="images/resized/800px/101 Promo (2).jpg">
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">3/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="images/101 Promo (3).jpg" target="_blank">ნახვა</a> |
+                <a href="images/101 Promo (3).jpg" download="">გადმოწერა</a>
+            </div>
+            <img src="images/resized/800px/101 Promo (3).jpg">
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">4/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="images/101 Episode Guide (1).jpg" target="_blank">ნახვა</a> |
+                <a href="images/101 Episode Guide (1).jpg" download="">გადმოწერა</a>
+            </div>
+            <img src="images/resized/800px/101 Episode Guide (1).jpg">
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">5/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="https://www.youtube.com/watch?v=Bh4dhy45VDE" target="_blank">ნახვა</a> |
+                <a style="color:gray">გადმოწერა</a>
+            </div>
+
+            <iframe id="youtube_video" src="https://www.youtube.com/embed/Bh4dhy45VDE?enablejsapi=1" allowfullscreen="1" frameborder="0"></iframe>
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">6/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="https://www.youtube.com/watch?v=r0-vGWXAkG4" target="_blank">ნახვა</a> |
+                <a style="color:gray">გადმოწერა</a>
+            </div>
+
+            <iframe id="youtube_video" src="https://www.youtube.com/embed/r0-vGWXAkG4?enablejsapi=1" allowfullscreen="1" frameborder="0"></iframe>
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">7/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="https://www.youtube.com/watch?v=fzcqsg4r9OE" target="_blank">ნახვა</a> |
+                <a style="color:gray">გადმოწერა</a>
+            </div>
+
+            <iframe id="youtube_video" src="https://www.youtube.com/embed/fzcqsg4r9OE?enablejsapi=1" allowfullscreen="1" frameborder="0"></iframe>
+        </div>
+
+        <div class="GallerySlides" style="display: none;">
+            <div class="Gallerynumbertext">8/8</div>
+            <div class="Galleryviewfullimage">
+                <a href="https://www.youtube.com/watch?v=RVHfJYTpRgI" target="_blank">ნახვა</a> |
+                <a style="color:gray">გადმოწერა</a>
+            </div>
+
+            <iframe id="youtube_video" src="https://www.youtube.com/embed/RVHfJYTpRgI?enablejsapi=1" allowfullscreen="1" frameborder="0"></iframe>
+        </div>
+
+        <a class="prev" onclick="plusSlides(-1);scrollthebar();pauseYouTubeVideo()">❮</a>
+        <a class="next" onclick="plusSlides(1);scrollthebar();pauseYouTubeVideo()">❯</a>
+        <div class="gallery-caption">
+            <p id="Gallery1Caption"></p>
+        </div>
+        <div class="scrollablegallerylist">
+
+            <div class="GalleryColumn1" id="galleryitem-1">
+                <img class="Gallery1Demo cursor" src="images/resized/800px/101 Promo (1).jpg" style="width:auto" onclick="currentSlide(1);pauseYouTubeVideo()" alt="17 წლის ნორმან ბეიტსი თავისი ოთახიდან კორიდორში ბორძიკით გამოდის. რაღაც რიგზე არაა. უეცრად რაღაც ახსენდება და დედამის ეძახის, რის შემდეგაც ოთახიდან-ოთახში სირბილს იწყებს.">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-2">
+                <img class="Gallery1Demo cursor" src="images/resized/800px/101 Promo (2).jpg" style="width:auto" onclick="currentSlide(2);pauseYouTubeVideo()" alt="">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-3">
+                <img class="Gallery1Demo cursor" src="images/resized/800px/101 Promo (3).jpg" style="width:auto" onclick="currentSlide(3);pauseYouTubeVideo()" alt="">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-4">
+                <img class="Gallery1Demo cursor" src="images/resized/800px/101 Episode Guide (1).jpg" style="width:auto" onclick="currentSlide(4);pauseYouTubeVideo()" alt="ვერა ფარმიგა ემზადება სამერსის მკვლელობის სცენისთვის.">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-5">
+                <img class="Gallery1Demo cursor" src="https://img.youtube.com/vi/Bh4dhy45VDE/hqdefault.jpg" style="width:auto" onclick="currentSlide(5);pauseYouTubeVideo()" alt="ეპიზოდს მიღმა: „ჯერ ოცნებობ, შემდეგ კვდები“ (ს1, ე1)">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-6">
+                <img class="Gallery1Demo cursor" src="https://img.youtube.com/vi/r0-vGWXAkG4/hqdefault.jpg" style="width:auto" onclick="currentSlide(6);pauseYouTubeVideo()" alt="წაშლილი სცენები (1x01 - ჯერ ოცნებობ, შემდეგ კვდები)">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-7">
+                <img class="Gallery1Demo cursor" src="https://img.youtube.com/vi/fzcqsg4r9OE/hqdefault.jpg" style="width:auto" onclick="currentSlide(7);pauseYouTubeVideo()" alt="კადრს მიღმა - თეატრი">
+            </div>
+
+            <div class="GalleryColumn1" id="galleryitem-8">
+                <img class="Gallery1Demo cursor" src="https://img.youtube.com/vi/RVHfJYTpRgI/hqdefault.jpg" style="width:auto" onclick="currentSlide(8);pauseYouTubeVideo()" alt="ბეიტსის მოტელის გადაღება">
+            </div>
+
+        </div>
+    </div>
+</div> -->

@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = convertNumberedLists(markup);
 
+        // markup = extractMediaItems(markup);
+
         markup = parseFiles(markup);
 
         markup = convertInternalLinks(markup);
@@ -367,6 +369,7 @@ let htmlTemplate = `
     <meta name="title" content="${title}">
     <meta name="description" content="${description}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="publish-date" content="${publishDate}">
     <title>${fullTitle}</title>
     <!--Facebook-->
     <meta property="og:type" content="website">

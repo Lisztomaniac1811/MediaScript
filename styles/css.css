@@ -1,0 +1,140 @@
+/* General Reset */
+body, h1, figure, img, div, nav, main {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+nav {
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+}
+
+nav a:hover {
+    background: #575757;
+}
+
+/* Main content styling */
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Page title header */
+.wiki-page-title-header h1 {
+    font-size: 2em;
+    color: #222;
+}
+
+.page-separator {
+    border: none;
+    height: 2px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+/* Gallery styling */
+.GalleryRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.GalleryColumn {
+    flex: 1;
+    min-width: 200px;
+}
+
+.GalleryColumn img {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.GalleryColumn img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Figures styling */
+figure {
+    margin: 0;
+    padding: 10px;
+}
+
+figure img {
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+figure img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+figcaption {
+    text-align: center;
+    margin-top: 5px;
+    color: #555;
+}
+
+/* Gallery item */
+.wikia-gallery-item {
+    margin-bottom: 20px;
+}
+
+.wikia-gallery-item .thumb {
+    position: relative;
+}
+
+.gallery-image-wrapper {
+    position: relative;
+}
+
+.gallery-image-wrapper img {
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-image-wrapper img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+    text-align: center;
+    margin-top: 5px;
+    color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .GalleryRow {
+        flex-direction: column;
+    }
+
+    figure {
+        width: 100%;
+    }
+}

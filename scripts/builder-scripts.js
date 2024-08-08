@@ -250,12 +250,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = convertBulletedLists(markup);
 
+        // markup = createGalleryModal(markup);
+
         markup = convertNumberedLists(markup);
 
-        // markup = extractMediaItems(markup);
-
         markup = parseFiles(markup);
-
+                
         markup = convertInternalLinks(markup);
 
         markup = convertExternalLinks(markup);
@@ -274,35 +274,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = parseYouTube(markup);
 
+        markup = replaceTocPlaceholder(markup);
 
-
-        // Convert * Bullet Point to <ul><li>Bullet Point</li></ul>
-        // markup = markup.replace(/^\*\s(.+)/gm, '<ul><li>$1</li></ul>'); 
-
-        // Convert ** Bullet Point to <ol><li>Bullet Point</li></ol>
-        markup = markup.replace(/^\*\*\s(.+)/gm, '<ol><li>$1</li></ol>');
-
-
+        // markup = createTableOfContents(markup);
 
         return markup;
     }
 
     // Function to generate HTML code from fields
     function generateHTML() {
+        const mainContentraw = document.getElementById('main-content').value;
+        let   galleryModal = createGalleryModal(mainContentraw);
         const title = document.getElementById('title').value;
         const description = document.getElementById('description').value;
         const url = document.getElementById('url').value;
         const previewImage = document.getElementById('preview-image').value;
         const publishDate = document.getElementById('publish-date').value;
-        const mainContentraw = document.getElementById('main-content').value;
-        let mainContent = document.getElementById('main-content').value;
+        let   mainContent = document.getElementById('main-content').value;
         const sidebarContent = document.getElementById('sidebar-content').value;
         const navigationMenu = document.getElementById('navigation-menu').value;
         const footerContent = document.getElementById('footer-content').value;
         const breadcrumbs = document.getElementById('breadcrumbs').value;
         const websiteTitle = document.getElementById('website-title').value;
         const language = document.getElementById('language').value;        
-
 
 
           // Determine the <title> content based on the presence of websiteTitle
@@ -344,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // </body>
 // </html>
 // `;
-
 let htmlTemplate = `
 <!DOCTYPE html>
 <html lang="${language}">
@@ -363,6 +356,7 @@ let htmlTemplate = `
     </script>
     <script src="script-pack.js"></script>
     <script src="variables.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <!--Meta tags start here-->
     <!--General-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -389,7 +383,7 @@ let htmlTemplate = `
     <link rel="stylesheet" href="styles/css.css">
     <!--Link tags end here-->
 </head>
-<body
+<body>
  ${navigationMenu === 'yes' ? '<nav id="dropdown-navigation" style="top: -64px;"></nav><nav id="mobile-banner"></nav>' : ''}
     <main>
      ${navigationMenu === 'yes' ? '<nav id="wiki-header-nav"></nav>' : ''}
@@ -399,7 +393,9 @@ let htmlTemplate = `
             <hr class="page-separator">
         </div>
         <div class="content">${mainContent}</div>
+        ${galleryModal}
     </main>
+    <script src="scripts/functions.js"></script>
      ${sidebarContent ? `<div id="sidebar">${sidebarContent}</div>` : ''}
      ${footerContent === 'yes' ? '<footer><p>Footer content example.</p></footer>' : ''}
 </body>

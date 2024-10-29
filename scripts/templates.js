@@ -1,3 +1,4 @@
+// Infobox Episode
 function parseInfoboxEpisode(text, variableName, variableValue) {
     const mainContentraw = document.getElementById('main-content').value;
     const { mediaItems } = extractMediaItems(mainContentraw);
@@ -102,9 +103,6 @@ function parseInfoboxEpisode(text, variableName, variableValue) {
 
     return resultHTML;
 }
-
-
-
 
 // Infobox Character
 
@@ -261,6 +259,111 @@ function parseInfoboxCharacter(text, variableName, variableValue) {
 
     return resultHTML;
 }
+
+//Generic Infobox
+
+function parseInfobox(text) {
+    const mainContentRaw = document.getElementById('main-content').value;
+    const { mediaItems } = extractMediaItems(mainContentRaw);
+
+    // Regular expression to match all occurrences of the general infobox and its contents
+    const infoboxPattern = /\{\{Infobox\s+([\s\S]*?)\}\}/g;
+    const keyValuePattern = /\|([^=\|\r\n]+)\s*=\s*([^\|\r\n]*)/g;
+
+    // This will hold the updated text with infoboxes replaced by HTML
+    let resultHTML = text;
+
+    let infoboxMatch;
+    while ((infoboxMatch = infoboxPattern.exec(text)) !== null) {
+        const infoboxContent = infoboxMatch[1];
+        let match;
+        const values = {};
+        const groups = {};
+        let currentGroup = null;
+
+        // Parse key-value pairs and organize them into groups if applicable
+        while ((match = keyValuePattern.exec(infoboxContent)) !== null) {
+            const key = match[1].trim();
+            const value = match[2].trim();
+
+            if (key.toLowerCase().endsWith(' title')) {
+                currentGroup = value || key;  // Use the value as the group title, or the key if no value
+                groups[currentGroup] = [];
+            } else if (key.toLowerCase().startsWith('title')) {
+                if (currentGroup) {
+                    groups[currentGroup].push({ key: value, value: '' }); // Empty value initially
+                } else {
+                    values[key] = value;
+                }
+            } else if (key.toLowerCase().startsWith('info')) {
+                if (currentGroup && groups[currentGroup].length > 0) {
+                    const lastItem = groups[currentGroup][groups[currentGroup].length - 1];
+                    lastItem.value = value;
+                } else {
+                    values[key] = value;
+                }
+            } else {
+                values[key] = value;
+            }
+        }
+
+        // Extract the title and image if present
+        const {
+            'Box title': title = 'No Title',
+            image = '',
+            caption = ''
+        } = values;
+
+        // Find the image number in the mediaItems list
+        const imgIndex = mediaItems.findIndex(item => item.name === image);
+        const imgNum = imgIndex !== -1 ? imgIndex + 1 : ''; // Add 1 to make it a 1-based index
+
+        // Build the infobox HTML
+        let infoboxHTML = `<aside class="infobox-general">`;
+
+        // Title and image section
+        infoboxHTML += `<h2 class="infobox-title">${title}</h2>`;
+        if (image) {
+            infoboxHTML += `<figure class="infobox-figure"><img src="images/resized/800px/${image}" alt="${caption}" onclick="openModal();currentSlide(${imgNum});scrollthebar();pauseYouTubeVideo();"><figcaption class="infobox-caption">${caption}</figcaption></figure>`;
+        }
+
+        // Loop through groups and generate corresponding HTML
+        for (const groupTitle in groups) {
+            if (groups.hasOwnProperty(groupTitle)) {
+                infoboxHTML += `<h2 class="infobox-subtitle">${groupTitle}</h2><section><table><tbody>`;
+                for (const item of groups[groupTitle]) {
+                    infoboxHTML += `<tr><th>${item.key}:</th><td>${item.value}</td></tr>`;
+                }
+                infoboxHTML += `</tbody></table></section>`;
+            }
+        }
+
+        // If there are values not belonging to any group, include them
+        if (Object.keys(values).length > 0) {
+            infoboxHTML += `<section><table><tbody>`;
+            for (const key in values) {
+                if (values.hasOwnProperty(key) && key !== 'Box title' && key !== 'image' && key !== 'caption') {
+                    infoboxHTML += `<tr><th>${key}:</th><td>${values[key]}</td></tr>`;
+                }
+            }
+            infoboxHTML += `</tbody></table></section>`;
+        }
+
+        infoboxHTML += `</aside>`;
+
+        // Replace the original infobox template with the generated HTML
+        resultHTML = resultHTML.replace(infoboxMatch[0], infoboxHTML);
+    }
+
+    return resultHTML;
+}
+
+
+
+
+
+
+
 
 
 // Function to parse references
@@ -533,103 +636,6 @@ function extractVideoId(url) {
     const match = url.match(videoIdPattern);
     return match ? match[1] : '';
 }
-
-
-
-// function extractMediaItems(text) {
-//     const mediaItems = new Map(); // Map to store unique media items
-
-//     // Helper function to check if a string is a valid width (e.g., '200px')
-//     function isWidth(str) {
-//         return /^\d+px$/.test(str);
-//     }
-
-//     // Helper function to check if a string is a valid float direction ('left' or 'right')
-//     function isFloatDirection(str) {
-//         return str === 'left' || str === 'right';
-//     }
-
-//     // Extract gallery items
-//     const galleryPattern = /<gallery>([\s\S]*?)<\/gallery>/g;
-//     let match;
-
-//     while ((match = galleryPattern.exec(text)) !== null) {
-//         const galleryContent = match[1];
-//         const galleryItems = galleryContent.trim().split('\n');
-
-//         galleryItems.forEach(item => {
-//             const [name, caption] = item.split('|');
-//             const itemName = name.trim();
-//             const itemCaption = caption ? caption.trim() : '';
-
-//             if (mediaItems.has(itemName)) {
-//                 if (itemCaption) {
-//                     const existingItem = mediaItems.get(itemName);
-//                     if (!existingItem.caption) {
-//                         existingItem.caption = itemCaption;
-//                     }
-//                 }
-//             } else {
-//                 mediaItems.set(itemName, { name: itemName, caption: itemCaption });
-//             }
-//         });
-//     }
-
-//     // Extract File items
-//     const filePattern = /\[\[File:(.*?)\]\]/g;
-
-//     while ((match = filePattern.exec(text)) !== null) {
-//         const fileContent = match[1].split('|');
-//         const name = fileContent[0].trim();
-//         let caption = '';
-
-//         fileContent.slice(1).forEach(param => {
-//             const trimmedParam = param.trim();
-//             if (!isWidth(trimmedParam) && !isFloatDirection(trimmedParam)) {
-//                 caption = trimmedParam;
-//             }
-//         });
-
-//         if (mediaItems.has(name)) {
-//             const existingItem = mediaItems.get(name);
-//             if (!existingItem.caption) {
-//                 existingItem.caption = caption;
-//             }
-//         } else {
-//             mediaItems.set(name, { name: name, caption: caption });
-//         }
-//     }
-
-//     // Extract YouTube items
-//     const youtubePattern = /<youtube>([\s\S]*?)<\/youtube>/g;
-
-//     while ((match = youtubePattern.exec(text)) !== null) {
-//         const youtubeContent = match[1];
-//         const youtubeItems = youtubeContent.trim().split('\n');
-
-//         youtubeItems.forEach(item => {
-//             const [url, caption] = item.split('|');
-//             const videoId = extractVideoId(url.trim());
-//             const itemCaption = caption ? caption.trim() : '';
-
-//             if (videoId) {
-//                 if (mediaItems.has(videoId)) {
-//                     const existingItem = mediaItems.get(videoId);
-//                     if (!existingItem.caption) {
-//                         existingItem.caption = itemCaption;
-//                     }
-//                 } else {
-//                     mediaItems.set(videoId, { name: videoId, caption: itemCaption });
-//                 }
-//             }
-//         });
-//     }
-
-//     const uniqueMediaItems = Array.from(mediaItems.values());
-//     const totalMediaCount = uniqueMediaItems.length;
-
-//     return { mediaItems: uniqueMediaItems, totalMediaCount };
-// }
  
 function extractGalleryItems(text) {
     const galleryPattern = /<gallery>([\s\S]*?)<\/gallery>/g;

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Database</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    
+        .table-container {
+            overflow-x: auto;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        table, th, td {
+            border: 1px solid black;
+        }
+    
+        th, td {
+            padding: 8px;
+            text-align: left;
+            max-width: 150px; /* Adjust width as needed */
+            word-wrap: break-word;
+            overflow: hidden; /* Hide horizontal scrollbars */
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        select, textarea {
+            width: 100%;
+            box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+        }
+    
+        textarea {
+            resize: none; /* Disable manual resizing */
+            min-height: 30px; /* Set a default height */
+            overflow: hidden; /* Prevent scrollbars */
+            transition: height 0.2s ease; /* Smooth transition */
+        }
+    
+        .add-row, .save-button {
+            margin-top: 10px;
+        }
+    
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+        }
+    
+        .icon-button:hover {
+            color: #007BFF;
+        }
+    
+        .file-input {
+            display: none;
+        }
+    
+        .filter-container {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            max-width: 100%;
+            margin-bottom: 10px;
+            overflow-x: auto; /* Allow horizontal scrolling if needed */
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    
+        .filter-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 10px;
+            color: #333;
+        }
+    
+        .filter-options {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    
+        .filter-label {
+            display: flex;
+            align-items: center;
+            padding: 5px 15px; /* Added more padding for spacing */
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background-color 0.3s;
+            user-select: none; /* Prevent text selection */
+        }
+    
+        .filter-label input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    
+        .filter-label:hover {
+            opacity: 0.8;
+        }
+    
+        .filter-input {
+            width: 200px; /* Adjust width as needed */
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-left: auto;
+            font-size: 14px;
+        }
+    
+        /* Color coding */
+        .namespace-Main {
+            background-color: #ffcccc; /* Light red */
+        }
+    
+        .namespace-Category {
+            background-color: #ccffcc; /* Light green */
+        }
+    
+        .namespace-Special {
+            background-color: #ccccff; /* Light blue */
+        }
+    
+        .namespace-Template {
+            background-color: #ffffcc; /* Light yellow */
+        }
+
+        .namespace-Image {
+            background-color: #fcccff; /* Light yellow */
+        }
+
+        .namespace-Video {
+            background-color: #4efaac; /* Light yellow */
+        }
+    
+        .filter-checkbox + span {
+            color: #333;
+        }
+    
+        .namespace-Main + span {
+            color: #ff9999;
+        }
+    
+        .namespace-Category + span {
+            color: #99ff99;
+        }
+    
+        .namespace-Special + span {
+            color: #9999ff;
+        }
+    
+        .namespace-Template + span {
+            color: #ffff99;
+        }
+    </style>
+    
+    
+    
+</head>
+<body>
+    <h1>Database</h1>
+    
+    <div class="filter-container">
+        <div class="filter-header">Filter Options</div>
+        <div class="filter-options">
+            <label class="filter-label namespace-Main">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Main">
+                <span>Main</span>
+            </label>
+            <label class="filter-label namespace-Category">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Category">
+                <span>Category</span>
+            </label>
+            <label class="filter-label namespace-Special">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Special">
+                <span>Special</span>
+            </label>
+            <label class="filter-label namespace-Template">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Template">
+                <span>Template</span>
+            </label>
+            <label class="filter-label namespace-Image">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Image">
+                <span>Image</span>
+            </label>
+            <label class="filter-label namespace-Video">
+                <input type="checkbox" class="filter-checkbox" checked data-namespace="Video">
+                <span>Video</span>
+            </label>
+        </div>
+        <input type="text" class="filter-input" placeholder="Search by title" id="searchInput">
+    </div>
+    
+    
+    <div class="table-container">
+        <table id="pageTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Local URL</th>
+                    <th>Full URL</th>
+                    <th>Description</th>
+                    <th>Preview Image</th>
+                    <th>Keywords</th>
+                    <th>Language</th>
+                    <th>Namespace</th>
+                    <th>Categories</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <button class="add-row" onclick="addRow()">Add New Page</button>
+    <button class="save-button" onclick="saveData()">Save</button>
+    
+    <script src="scripts/database.js"></script> <!-- Make sure this path is correct -->
+    <script>
+        const namespaceColors = {
+            Main: 'namespace-Main',
+            Category: 'namespace-Category',
+            Special: 'namespace-Special',
+            Template: 'namespace-Template',
+            Image: 'namespace-Image',
+            Video: 'namespace-Video'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof database !== 'undefined' && database.length > 0) {
+                database.forEach((data, index) => {
+                    addRow();
+                    const row = document.querySelectorAll('#tableBody tr')[index];
+                    const textareas = row.getElementsByTagName('textarea');
+                    const selects = row.getElementsByTagName('select');
+                    textareas[0].value = data.title || '';
+                    textareas[1].value = data.localUrl || '';
+                    textareas[2].value = data.fullUrl || '';
+                    textareas[3].value = data.description || '';
+                    textareas[4].value = data.previewImage || '';
+                    textareas[5].value = data.keywords || '';
+                    selects[0].value = data.language || 'en';
+                    selects[1].value = data.namespace || 'Main';
+                    textareas[6].value = data.categories || '';
+                    updateRowColor(row);
+                });
+            }
+
+            // Add event listeners for filter checkboxes and search input
+            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTableVisibility);
+            });
+
+            document.getElementById('searchInput').addEventListener('input', updateTableVisibility);
+        });
+
+        function addRow() {
+            const tableBody = document.getElementById('tableBody');
+            const rowCount = tableBody.getElementsByTagName('tr').length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td><textarea class="title"></textarea></td>
+                <td><textarea class="local-url"></textarea></td>
+                <td><textarea class="full-url"></textarea></td>
+                <td><textarea class="description"></textarea></td>
+                <td><textarea class="preview-image"></textarea></td>
+                <td><textarea class="keywords"></textarea></td>
+                <td>
+                    <select class="language">
+                        <option value="en">English</option>
+                        <option value="ka">Georgian</option>
+                        <option value="eo">Esperanto</option>
+                        <option value="de">German</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="namespace" onchange="updateRowColor(this.parentElement.parentElement)">
+                        <option value="Main">Main</option>
+                        <option value="Category">Category</option>
+                        <option value="Special">Special</option>
+                        <option value="Template">Template</option>
+                        <option value="Image">Image</option>
+                        <option value="Video">Video</option>
+                    </select>
+                </td>
+                <td><textarea class="categories"></textarea></td>
+                <td>
+                    <button class="icon-button" onclick="document.getElementById('file-input-${rowCount}').click()">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <input type="file" id="file-input-${rowCount}" class="file-input" accept=".html" onchange="handleFileUpload(event, ${rowCount})">
+                    <button class="icon-button" onclick="deleteRow(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            tableBody.appendChild(newRow);
+            updateRowColor(newRow);
+            updateRowNumbers();
+
+            const textareas = newRow.getElementsByTagName('textarea');
+            for (const textarea of textareas) {
+                textarea.addEventListener('focus', () => {
+                    textarea.style.height = 'auto'; // Allow textarea to expand
+                    textarea.style.height = `${textarea.scrollHeight}px`; // Set height to fit content
+                });
+
+                textarea.addEventListener('input', () => {
+                    textarea.style.height = 'auto'; // Reset height to auto to fit new content
+                    textarea.style.height = `${textarea.scrollHeight}px`; // Set height to fit new content
+                });
+
+                textarea.addEventListener('blur', () => {
+                    textarea.style.height = '30px'; // Reset to default height
+                });
+            }
+        }
+
+        function updateRowColor(row) {
+            const namespaceSelect = row.querySelector('.namespace');
+            const namespace = namespaceSelect ? namespaceSelect.value : 'Main';
+            row.className = namespaceColors[namespace] || '';
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            updateRowNumbers();
+        }
+
+        function saveData() {
+        const rows = document.querySelectorAll('#tableBody tr');
+        const data = Array.from(rows).map(row => {
+            const textareas = row.getElementsByTagName('textarea');
+            const selects = row.getElementsByTagName('select');
+            return {
+                title: textareas[0].value,
+                localUrl: textareas[1].value,
+                fullUrl: textareas[2].value,
+                description: textareas[3].value,
+                previewImage: textareas[4].value,
+                keywords: textareas[5].value,
+                language: selects[0].value,
+                namespace: selects[1].value,
+                categories: textareas[6].value
+            };
+        });
+
+        const jsContent = `var database = ${JSON.stringify(data, null, 2)};`;
+        const blob = new Blob([jsContent], { type: 'application/javascript' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'database.js';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+
+        function updateTableVisibility() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const checkboxes = document.querySelectorAll('.filter-checkbox');
+            const activeNamespaces = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.dataset.namespace);
+
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                const title = row.querySelector('.title').value.toLowerCase();
+                const namespace = row.querySelector('.namespace').value;
+
+                const isNamespaceVisible = activeNamespaces.includes(namespace);
+                const isTitleMatch = title.includes(searchValue);
+
+                if (isNamespaceVisible && isTitleMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function handleFileUpload(event, rowIndex) {
+            const file = event.target.files[0];
+            if (file && file.type === 'text/html') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(e.target.result, 'text/html');
+                    const variables = {
+                        title: doc.querySelector('script')?.textContent.match(/var\s+title\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        localUrl: doc.querySelector('script')?.textContent.match(/var\s+localUrl\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        fullUrl: doc.querySelector('script')?.textContent.match(/var\s+fullUrl\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        description: doc.querySelector('script')?.textContent.match(/var\s+description\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        previewImage: doc.querySelector('script')?.textContent.match(/var\s+previewImage\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        keywords: doc.querySelector('script')?.textContent.match(/var\s+keywords\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+                        language: doc.querySelector('script')?.textContent.match(/var\s+language\s*=\s*['"]([^'"]+)['"]/)?.[1] || 'en',
+                        namespace: doc.querySelector('script')?.textContent.match(/var\s+namespace\s*=\s*['"]([^'"]+)['"]/)?.[1] || 'Main',
+                        categories: doc.querySelector('script')?.textContent.match(/var\s+categories\s*=\s*['"]([^'"]+)['"]/)?.[1] || ''
+                    };
+
+                    const row = document.querySelectorAll('#tableBody tr')[rowIndex];
+                    const textareas = row.getElementsByTagName('textarea');
+                    const selects = row.getElementsByTagName('select');
+                    textareas[0].value = variables.title;
+                    textareas[1].value = variables.localUrl;
+                    textareas[2].value = variables.fullUrl;
+                    textareas[3].value = variables.description;
+                    textareas[4].value = variables.previewImage;
+                    textareas[5].value = variables.keywords;
+                    selects[0].value = variables.language;
+                    selects[1].value = variables.namespace;
+                    textareas[6].value = variables.categories;
+                    updateRowColor(row);
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please upload a valid HTML file.');
+            }
+        }
+    </script>
+</body>
+</html>

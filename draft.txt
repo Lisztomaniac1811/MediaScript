@@ -1,0 +1,46 @@
+//         function handleFileUpload(event, rowIndex) {
+//     const file = event.target.files[0];
+//     if (file && file.type === 'text/html') {
+//         const reader = new FileReader();
+//         reader.onload = function(e) {
+//             const parser = new DOMParser();
+//             const doc = parser.parseFromString(e.target.result, 'text/html');
+            
+//             const variables = {
+//                 title: doc.querySelector('script')?.textContent.match(/var\s+title\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 localUrl: doc.querySelector('script')?.textContent.match(/var\s+localUrl\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 fullUrl: doc.querySelector('script')?.textContent.match(/var\s+fullUrl\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 description: doc.querySelector('script')?.textContent.match(/var\s+description\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 previewImage: doc.querySelector('script')?.textContent.match(/var\s+previewImage\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 keywords: doc.querySelector('script')?.textContent.match(/var\s+keywords\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 language: doc.querySelector('script')?.textContent.match(/var\s+language\s*=\s*['"]([^'"]+)['"]/)?.[1] || '',
+//                 categories: doc.querySelector('script')?.textContent.match(/var\s+categories\s*=\s*['"]([^'"]+)['"]/)?.[1] || ''
+//             };
+
+//             // Check for duplicates
+//             const existingIndex = DataBase.findIndex(entry => entry.localUrl === variables.localUrl);
+//             if (existingIndex !== -1) {
+//                 alert(`Page with Local URL "${variables.localUrl}" already exists in the database at entry number ${existingIndex + 1}.`);
+//                 return;
+//             }
+
+//             // Update row with new data
+//             const row = document.querySelectorAll('#tableBody tr')[rowIndex];
+//             const inputs = row.getElementsByTagName('input');
+//             inputs[0].value = variables.title;
+//             inputs[1].value = variables.localUrl;
+//             inputs[2].value = variables.fullUrl;
+//             inputs[3].value = variables.description;
+//             inputs[4].value = variables.previewImage;
+//             inputs[5].value = variables.keywords;
+//             inputs[6].value = variables.language;
+//             inputs[7].value = variables.categories;
+            
+//             // Add new entry to DataBase
+//             DataBase.push(variables);
+//         };
+//         reader.readAsText(file);
+//     } else {
+//         alert('Please upload a valid HTML file.');
+//     }
+// }

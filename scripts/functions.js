@@ -150,3 +150,33 @@ function pauseYouTubeVideo() {
   <\/svg>
   `)
   
+  function toggletabs() {
+    var x = document.getElementById("header-nav-mobile");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default Enter key behavior (form submission)
+        const searchInput = document.getElementById('search-bar');
+        if (searchInput === document.activeElement) {
+            const saveSearchLink = document.getElementById('saveSearch');
+            if (saveSearchLink) {
+                saveSearchLink.click(); // Trigger the anchor's click event
+            }
+        }
+    }
+});
+
+  // Function to save the search value to localStorage
+  function saveSearchValue() {
+    // Get the value from the search-bar input
+    const searchValue = document.getElementById('search-bar').value;
+    
+    // Save the search value to localStorage
+    localStorage.setItem('searchValue', searchValue);
+}

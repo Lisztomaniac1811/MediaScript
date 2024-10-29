@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Database</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid black; }
+        th, td { padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .add-row { margin-top: 10px; }
+        .upload-icon { cursor: pointer; }
+        .save-button { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Page Database</h1>
+    <table id="pageTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Local URL</th>
+                <th>Full URL</th>
+                <th>Description</th>
+                <th>Preview Image</th>
+                <th>Keywords</th>
+                <th>Language</th>
+                <th>Categories</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <button class="add-row" onclick="addRow()">Add New Page</button>
+    <button class="save-button" onclick="saveData()">Save</button>
+    <input type="file" id="fileInput" style="display:none" onchange="handleFileUpload(event)">
+    <script>
+        let pageData = [];
+
+        function addRow() {
+            const tableBody = document.getElementById('tableBody');
+            const rowCount = tableBody.getElementsByTagName('tr').length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td><input type="text" class="title"></td>
+                <td><input type="text" class="local-url"></td>
+                <td><input type="text" class="full-url"></td>
+                <td><input type="text" class="description"></td>
+                <td><input type="text" class="preview-image"></td>
+                <td><input type="text" class="keywords"></td>
+                <td><input type="text" class="language"></td>
+                <td><input type="text" class="categories"></td>
+                <td><button onclick="document.getElementById('fileInput').click()">Upload</button></td>
+            `;
+            
+            tableBody.appendChild(newRow);
+            updateRowNumbers();
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const data = extractDataFromContent(content);
+                    const row = event.target.parentElement.parentElement;
+                    const inputs = row.getElementsByTagName('input');
+                    inputs[0].value = data.title;
+                    inputs[1].value = data.locurl;
+                    inputs[2].value = data.url;
+                    inputs[3].value = data.description;
+                    inputs[4].value = data.previewImage;
+                    inputs[5].value = data.keywords;
+                    inputs[6].value = data.language;
+                    inputs[7].value = data.categories;
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function extractDataFromContent(content) {
+            const data = {};
+            const lines = content.split('\n');
+            lines.forEach(line => {
+                if (line.startsWith('var language = ')) data.language = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var title = ')) data.title = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var description = ')) data.description = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var url = ')) data.url = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var locurl = ')) data.locurl = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var previewImage = ')) data.previewImage = line.split('=')[1].replace(/["';]/g, '').trim();
+                if (line.startsWith('var categories = ')) data.categories = line.split('=')[1].replace(/["';]/g, '').trim();
+            });
+            return data;
+        }
+
+        function saveData() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            pageData = Array.from(rows).map(row => {
+                const inputs = row.getElementsByTagName('input');
+                return {
+                    title: inputs[0].value,
+                    localUrl: inputs[1].value,
+                    fullUrl: inputs[2].value,
+                    description: inputs[3].value,
+                    previewImage: inputs[4].value,
+                    keywords: inputs[5].value,
+                    language: inputs[6].value,
+                    categories: inputs[7].value
+                };
+            });
+
+            const blob = new Blob([`const pageData = ${JSON.stringify(pageData, null, 2)};`], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'database.js';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadData() {
+            fetch('scripts/database.js')
+                .then(response => response.text())
+                .then(text => {
+                    // Evaluate the fetched text to get the pageData variable
+                    const script = document.createElement('script');
+                    script.textContent = text;
+                    document.body.appendChild(script);
+                    
+                    if (typeof pageData !== 'undefined' && pageData.length > 0) {
+                        pageData.forEach((data, index) => {
+                            addRow();
+                            const row = document.querySelectorAll('#tableBody tr')[index];
+                            const inputs = row.getElementsByTagName('input');
+                            inputs[0].value = data.title;
+                            inputs[1].value = data.localUrl;
+                            inputs[2].value = data.fullUrl;
+                            inputs[3].value = data.description;
+                            inputs[4].value = data.previewImage;
+                            inputs[5].value = data.keywords;
+                            inputs[6].value = data.language;
+                            inputs[7].value = data.categories;
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading database.js:', error));
+        }
+
+        // Load existing data from database.js if available
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

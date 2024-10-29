@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/database.css">
+    <title>Category Database</title>
+    <style>
+        .exists-yes {
+            color: green;
+        }
+        .exists-no {
+            color: red;
+        }
+        .add-category-btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Category Database</h1>
+    <table id="categoryTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Local URL</th>
+                <th>Full URL</th>
+                <th>Description</th>
+                <th>Language</th>
+                <th>Categories</th>
+                <th>Exists?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <button id="saveBtn">Save</button>
+
+    <script src="scripts/database.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const database = window.database;
+            const databaseCat = window.databaseCat;
+            const categoryTable = document.getElementById("categoryTable").getElementsByTagName('tbody')[0];
+
+            // Helper function to create a table row
+            function createRow(index, category, exists) {
+                const row = document.createElement('tr');
+
+                const numberCell = document.createElement('td');
+                numberCell.textContent = index + 1;
+                row.appendChild(numberCell);
+
+                Object.keys(category).forEach(key => {
+                    const cell = document.createElement('td');
+                    cell.textContent = category[key];
+                    row.appendChild(cell);
+                });
+
+                const existsCell = document.createElement('td');
+                existsCell.innerHTML = exists ? '<span class="exists-yes">&#10003;</span>' : '<span class="exists-no">&#10060;</span>';
+                row.appendChild(existsCell);
+
+                const actionsCell = document.createElement('td');
+                if (!exists) {
+                    const addButton = document.createElement('button');
+                    addButton.innerHTML = '<span class="add-category-btn">+</span>';
+                    addButton.onclick = function() {
+                        downloadCategoryFile(category.title);
+                    };
+                    actionsCell.appendChild(addButton);
+                }
+                row.appendChild(actionsCell);
+
+                categoryTable.appendChild(row);
+            }
+
+            // Extract categories from database, remove duplicates, and sort alphabetically
+            const categoryList = [...new Set(database.map(item => item.categories))].sort();
+
+            // Populate the table
+            categoryList.forEach((categoryTitle, index) => {
+                const categoryMatch = databaseCat.find(cat => cat.title.toLowerCase() === categoryTitle.toLowerCase());
+                const categoryData = {
+                    title: categoryTitle,
+                    localUrl: categoryMatch ? categoryMatch.localUrl : "",
+                    fullUrl: categoryMatch ? categoryMatch.fullUrl : "",
+                    description: categoryMatch ? categoryMatch.description : "",
+                    language: categoryMatch ? categoryMatch.language : "",
+                    categories: "Categories"
+                };
+                createRow(index, categoryData, !!categoryMatch);
+            });
+
+            // Function to download missing category files
+            function downloadCategoryFile(title) {
+                const content = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/category.css">
+    <title>Category: ${title}</title>
+    <style>
+    </style>
+</head>
+<body>
+    <h1>Category: ${title}</h1>
+    <div id="content"></div>
+    
+    <script src=\"scripts\/database.js\"\><\/script\>
+    <script src=\"scripts\/category.js\"\>
+    <\/script>
+<\/body>
+<\/html>
+                `;
+                const blob = new Blob([content], { type: "text/html" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `Category-${title}.html`;
+                link.click();
+            }
+
+            // Save button functionality
+            document.getElementById("saveBtn").addEventListener("click", function() {
+                const newDatabaseCat = [];
+
+                for (const categoryTitle of categoryList) {
+                    const existingCategory = databaseCat.find(cat => cat.title.toLowerCase() === categoryTitle.toLowerCase());
+                    if (!existingCategory) {
+                        newDatabaseCat.push({
+                            title: categoryTitle,
+                            localUrl: `Category-${categoryTitle}.html`,
+                            fullUrl: "",
+                            description: `Category page for ${categoryTitle}`,
+                            language: "en",
+                            categories: "Categories"
+                        });
+                    }
+                }
+
+                const updatedDatabaseCat = [...databaseCat, ...newDatabaseCat];
+                const newDatabaseJS = `var databaseCat = ${JSON.stringify(updatedDatabaseCat, null, 2)};\n\nvar database = ${JSON.stringify(database, null, 2)};`;
+                
+                const blob = new Blob([newDatabaseJS], { type: "application/javascript" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "database.js";
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>

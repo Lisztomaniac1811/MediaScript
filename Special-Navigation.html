@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syntax to HTML Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-bottom: 10px;
+        }
+        .output {
+            white-space: pre-wrap; /* Preserve formatting */
+            background-color: #f5f5f5;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Syntax to HTML Converter</h1>
+    <textarea id="syntaxInput" placeholder="Enter syntax here..."></textarea>
+    <button onclick="generateHTML()">Generate HTML</button>
+    <textarea id="htmlOutput" class="output" readonly></textarea>
+
+    <script>
+        // Function to convert syntax to HTML
+        function convertSyntax(input) {
+            const lines = input.trim().split('\n');
+            let html = '<nav>\n<ul>\n';
+            
+            const listStack = [];
+            
+            lines.forEach(line => {
+                let indentLevel = 0;
+                while (line[indentLevel] === '*') {
+                    indentLevel++;
+                }
+                
+                // Limit depth to 3 levels
+                if (indentLevel > 3) {
+                    indentLevel = 3;
+                }
+                
+                // Parse content
+                const content = line.slice(indentLevel).trim();
+                const parts = content.split('|').map(str => str.trim());
+                
+                let listItem;
+                if (content.startsWith('#|')) {
+                    // If #| is present, it's a title
+                    const title = content.slice(2).trim();
+                    listItem = `<li><div class="title">${title}</div></li>\n`;
+                } else if (parts.length === 2) {
+                    // If | is present, it's a link and title
+                    const [link, title] = parts;
+                    listItem = `<li><a href="${link}" title="${title}">${title}</a></li>\n`;
+                } else {
+                    // If | is missing, treat content as both link and title
+                    const linkAndTitle = parts[0];
+                    listItem = `<li><a href="${linkAndTitle}" title="${linkAndTitle}">${linkAndTitle}</a></li>\n`;
+                }
+                
+                // Close tags if going up in hierarchy
+                while (listStack.length > indentLevel) {
+                    html += '</ul>\n</li>\n';
+                    listStack.pop();
+                }
+                
+                // Open new lists if necessary
+                if (indentLevel > listStack.length) {
+                    html += '<ul>\n';
+                    listStack.push(indentLevel);
+                }
+                
+                // Add the list item
+                html += listItem;
+            });
+            
+            // Close remaining open tags
+            while (listStack.length > 0) {
+                html += '</ul>\n</li>\n';
+                listStack.pop();
+            }
+            
+            html += '</ul>\n</nav>';
+            return html;
+        }
+
+        // Function to handle button click and update output
+        function generateHTML() {
+            const input = document.getElementById('syntaxInput').value;
+            let html = convertSyntax(input);
+            
+            // Apply additional modifications if needed
+            // html = addCustomModification(html);
+            // html = anotherCustomModification(html);
+            
+            document.getElementById('htmlOutput').value = html;
+        }
+    </script>
+</body>
+</html>

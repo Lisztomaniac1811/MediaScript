@@ -264,6 +264,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markup = parseInfoboxCharacter(markup);
 
+        // markup = parseInfobox(markup);
+
         markup = parseReferences(markup);
 
         markup = parseNotes(markup);
@@ -275,8 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
         markup = parseYouTube(markup);
 
         markup = replaceTocPlaceholder(markup);
-
-        // markup = createTableOfContents(markup);
 
         return markup;
     }
